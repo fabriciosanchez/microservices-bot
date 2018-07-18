@@ -47,24 +47,6 @@ namespace OneBank.MasterBot.Dialogs
             }
         }
 
-        //private async Task ResumeAfterChoiceSelection(IDialogContext context, IAwaitable<string> result)
-        //{
-        //    var choice = await result;
-
-        //    if (choice.Equals("Account Management", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        await ForwardToChildBot("fabric:/OneBank.FabricApp/OneBank.AccountsBot", "api/messages", context.Activity);
-        //    }
-        //    else if (choice.Equals("Buy Insurance", StringComparison.OrdinalIgnoreCase))
-        //    {
-        //        await context.PostAsync("Forward me to InsuranceBot");
-        //    }
-        //    else
-        //    {
-        //        context.Done(1);
-        //    }
-        //}
-
         private async Task ResumeAfterChoiceSelection(IDialogContext context, IAwaitable<string> result)
         {
             var choice = await result;
