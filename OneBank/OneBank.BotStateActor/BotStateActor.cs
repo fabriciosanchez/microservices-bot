@@ -1,50 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Data;
 using OneBank.BotStateActor.Interfaces;
 
 namespace BotStateActor
 {
-    /// <remarks>
-    /// This class represents an actor.
-    /// Every ActorID maps to an instance of this class.
-    /// The StatePersistence attribute determines persistence and replication of actor state:
-    ///  - Persisted: State is written to disk and replicated.
-    ///  - Volatile: State is kept in memory only and replicated.
-    ///  - None: State is kept in memory only and not replicated.
-    /// </remarks>
     [StatePersistence(StatePersistence.Persisted)]
     internal class BotStateActor : Actor, IBotStateActor
     {
-        /// <summary>
-        /// Initializes a new instance of BotStateActor
-        /// </summary>
-        /// <param name="actorService">The Microsoft.ServiceFabric.Actors.Runtime.ActorService that will host this actor instance.</param>
-        /// <param name="actorId">The Microsoft.ServiceFabric.Actors.ActorId for this actor instance.</param>
         public BotStateActor(ActorService actorService, ActorId actorId)
             : base(actorService, actorId)
         {
         }
-
-        /// <summary>
-        /// This method is called whenever an actor is activated.
-        /// An actor is activated the first time any of its methods are invoked.
-        /// </summary>
-        protected override Task OnActivateAsync()
+        public async Task<BotStateContext> GetBotStateAsync(string key, CancellationToken cancellationToken)
         {
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
+            ActorEventSource.Current.ActorMessage(this, $"Getting bot state from actor key - {key}");
+            ConditionalValue<BotStateContext> result = await this.StateManager.TryGetStateAsync<BotStateContext>(key, cancellationToken);
 
-            // The StateManager is this actor's private state store.
-            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
-            // Any serializable object can be saved in the StateManager.
-            // For more information, see https://aka.ms/servicefabricactorsstateserialization
+            if (result.HasValue)
+            {
+                return result.Value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-            return Task.FromResult(0);
-        }       
+        public async Task<BotStateContext> SaveBotStateAsync(string key, BotStateContext dialogState, CancellationToken cancellationToken)
+        {
+            ActorEventSource.Current.ActorMessage(this, $"Adding bot state for actor key - {key}");
+            return await this.StateManager.AddOrUpdateStateAsync(
+                key,
+                dialogState,
+                (k, v) =>
+            {
+                return (dialogState.UserData.ETag != "*" && dialogState.UserData.ETag != v.UserData.ETag) ||
+                      (dialogState.ConversationData.ETag != "*" && dialogState.ConversationData.ETag != v.UserData.ETag) ||
+                        (dialogState.PrivateConversationData.ETag != "*" && dialogState.PrivateConversationData.ETag != v.UserData.ETag)
+                        ? throw new Exception() : v = dialogState;
+            },
+            cancellationToken);
+        }
     }
 }

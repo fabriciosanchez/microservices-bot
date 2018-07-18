@@ -4,7 +4,10 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using Microsoft.Bot.Builder.Dialogs;
     using Microsoft.Bot.Connector;
+    using OneBank.Common;
+    using OneBank.MasterBot.Dialogs;
 
     [RoutePrefix("api/messages")]
     public class MasterBotController : ApiController
@@ -20,15 +23,16 @@
         [Route("")]
         public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
+            RequestCallContext.AuthToken.Value = $"Bearer {this.Request.Headers.Authorization.Parameter}";
+
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                
+                await Conversation.SendAsync(activity, () => new MasterDialog());
             }
             else
             {
                 this.HandleSystemMessage(activity);
             }
-
             return new HttpResponseMessage(HttpStatusCode.Accepted);
         }
 

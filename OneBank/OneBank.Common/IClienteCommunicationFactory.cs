@@ -1,0 +1,7 @@
+﻿namespace OneBank.Common
+ {
+    using Microsoft.ServiceFabric.Services.Communication.Client;
+    public interface IHttpCommunicationClientFactory : ICommunicationClientFactory<HttpCommunicationClient>
+    {
+    }
+}

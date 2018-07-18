@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -165,8 +166,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HandleExceptionAttribute.cs" />
+    <Compile Include="HttpCommunicationClient.cs" />
+    <Compile Include="HttpCommunicationClientFactory.cs" />
+    <Compile Include="IClienteCommunicationFactory.cs" />
     <Compile Include="OwinCommunicationListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestCallContext.cs" />
+    <Compile Include="ServiceFabricBotDataStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

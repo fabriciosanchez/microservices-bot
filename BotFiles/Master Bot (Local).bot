@@ -1,0 +1,15 @@
+{
+    "name": "Master Bot (Local)",
+    "description": "",
+    "secretKey": "",
+    "services": [
+        {
+            "id": "4b6c6f50-8ac8-11e8-be38-ff6b04384667",
+            "name": "http://localhost:8770/api/messages",
+            "type": "endpoint",
+            "appId": "a8fe8368-9518-4fec-9717-fdbc156febcc",
+            "appPassword": "mtwyCDP267{[$wcfLEKC92(",
+            "endpoint": "http://localhost:8770/api/messages"
+        }
+    ]
+}

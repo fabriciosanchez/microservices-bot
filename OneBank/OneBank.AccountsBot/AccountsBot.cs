@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Fabric;
+using System.Fabric.Description;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using OneBank.Common;
 
 namespace OneBank.AccountsBot
 {
@@ -24,7 +26,12 @@ namespace OneBank.AccountsBot
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
+            var endpoints = this.Context.CodePackageActivationContext.GetEndpoints()
+                                    .Where(endpoint => endpoint.Protocol == EndpointProtocol.Http || endpoint.Protocol == EndpointProtocol.Https)
+                                    .Select(endpoint => endpoint.Name);
+
+            return endpoints.Select(endpoint => new ServiceInstanceListener(
+                 context => new OwinCommunicationListener(Startup.ConfigureApp, this.Context, endpoint), endpoint));
         }
     }
 }

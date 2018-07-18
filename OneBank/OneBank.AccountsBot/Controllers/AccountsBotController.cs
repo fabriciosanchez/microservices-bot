@@ -4,7 +4,9 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using Microsoft.Bot.Builder.Dialogs;
     using Microsoft.Bot.Connector;
+    using OneBank.AccountsBot.Dialogs;
 
     [RoutePrefix("api/messages")]
     public class AccountsBotController : ApiController
@@ -22,7 +24,7 @@
         {
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-               
+                await Conversation.SendAsync(activity, () => new AccountsEchoDialog());
             }
             else
             {

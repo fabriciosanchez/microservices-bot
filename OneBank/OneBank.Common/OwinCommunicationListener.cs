@@ -1,16 +1,13 @@
-﻿using Microsoft.Owin.Hosting;
-using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Owin;
-using System;
-using System.Collections.Generic;
-using System.Fabric;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace OneBank.Common
+﻿namespace OneBank.Common
 {
+    using System;
+    using System.Fabric;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Autofac;
+    using Microsoft.Owin.Hosting;
+    using Microsoft.ServiceFabric.Services.Communication.Runtime;
+    using Owin;
     public class OwinCommunicationListener : ICommunicationListener
     {
         private readonly string endpointName;
@@ -26,6 +23,7 @@ namespace OneBank.Common
             this.serviceContext = serviceContext ?? throw new ArgumentNullException(nameof(serviceContext));
             this.endpointName = endpointName ?? throw new ArgumentNullException(nameof(endpointName));
         }
+
 
         public void Abort()
         {
@@ -50,7 +48,7 @@ namespace OneBank.Common
                 StatefulServiceContext statefulServiceContext = this.serviceContext as StatefulServiceContext;
                 this.listeningAddress = $"{protocol}://+:{port}/{statefulServiceContext.PartitionId}/{statefulServiceContext.ReplicaId}/{Guid.NewGuid()}";
             }
-            else if(this.serviceContext is StatelessServiceContext)
+            else if (this.serviceContext is StatelessServiceContext)
             {
                 this.listeningAddress = $"{protocol}://+:{port}";
             }
@@ -64,7 +62,7 @@ namespace OneBank.Common
             try
             {
                 this.webAppHandle = WebApp.Start(this.listeningAddress, appBuilder => this.startup.Invoke(appBuilder));
-                Task.FromResult(this.publishAddress);
+                return Task.FromResult(this.publishAddress);
             }
             catch (Exception)
             {
@@ -75,7 +73,7 @@ namespace OneBank.Common
 
         private void StopHosting()
         {
-            if(this.webAppHandle != null)
+            if (this.webAppHandle != null)
             {
                 try
                 {

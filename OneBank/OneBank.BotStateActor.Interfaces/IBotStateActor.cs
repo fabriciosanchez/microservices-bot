@@ -16,5 +16,8 @@ namespace OneBank.BotStateActor.Interfaces
     /// </summary>
     public interface IBotStateActor : IActor
     {
+        Task<BotStateContext> GetBotStateAsync(string key, CancellationToken cancellationToken);
+
+        Task<BotStateContext> SaveBotStateAsync(string key, BotStateContext dialogState, CancellationToken cancellationToken);
     }
 }

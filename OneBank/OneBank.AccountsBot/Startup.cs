@@ -1,7 +1,12 @@
 ﻿namespace OneBank.AccountsBot
 {
     using System.Web.Http;
+    using Autofac;
+    using Autofac.Integration.WebApi;
     using Common;
+    using Microsoft.Bot.Builder.Dialogs;
+    using Microsoft.Bot.Builder.Dialogs.Internals;
+    using Microsoft.Bot.Connector;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using Owin;
@@ -38,6 +43,20 @@
 
             config.Filters.Add(new HandleExceptionAttribute());
             appBuilder.UseWebApi(config);
+
+            Conversation.UpdateContainer(
+                builder =>
+                {
+                    builder.Register(c => new ServiceFabricBotDataStore("Accounts"))
+                                .As<IBotDataStore<BotData>>().InstancePerLifetimeScope();
+                });
+
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(Conversation.Container);
+
+            config.Filters.Add(new BotAuthentication() { MicrosoftAppId = "a8fe8368-9518-4fec-9717-fdbc156febcc", MicrosoftAppPassword = "mtwyCDP267{[$wcfLEKC92(" });
+            var microsoftAppCredentials = Conversation.Container.Resolve<MicrosoftAppCredentials>();
+            microsoftAppCredentials.MicrosoftAppId = "a8fe8368-9518-4fec-9717-fdbc156febcc";
+            microsoftAppCredentials.MicrosoftAppPassword = "mtwyCDP267{[$wcfLEKC92(";
         }
     }
 }

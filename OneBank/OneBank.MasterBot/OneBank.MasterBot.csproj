@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\MasterBotController.cs" />
+    <Compile Include="Dialogs\MasterDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MasterBot.cs" />
     <Compile Include="Program.cs" />
@@ -166,9 +168,7 @@
       <Name>OneBank.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dialogs\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
